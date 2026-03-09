@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Reclaim LA</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --c1: #ea8c55;
+  --c2: #c75146;
+  --c3: #ad2e24;
+  --c4: #811715;
+  --cream: #faf7f3;
+  --white: #ffffff;
+  --dark: #1a1512;
+  --mid: #4e4440;
+  --muted: #9a8e86;
+  --border: rgba(100,70,50,0.1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--white); color: var(--dark); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+
+/* CURSOR */
+.cursor { position: fixed; width: 8px; height: 8px; background: var(--c2); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: width .2s, height .2s; }
+.cursor-ring { position: fixed; width: 28px; height: 28px; border: 1px solid var(--c1); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); opacity: .35; transition: width .25s, height .25s; }
+
+/* NAV */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 60px; background: rgba(255,255,255,.96); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.nav-logo { font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 17px; letter-spacing: .22em; text-transform: uppercase; color: var(--dark); text-decoration: none; }
+.nav-logo .re, .nav-logo .la { color: var(--c2); }
+.nav-logo .claim { font-weight: 500; }
+.nav-links { display: flex; align-items: center; gap: 44px; list-style: none; }
+.nav-links a { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--mid); text-decoration: none; transition: color .2s; }
+.nav-links a:hover { color: var(--c2); }
+.nav-book { background: var(--c3) !important; color: #fff !important; padding: 11px 28px; transition: background .2s !important; }
+.nav-book:hover { background: var(--dark) !important; }
+
+/* HERO */
+.hero { min-height: 100vh; background: var(--cream); display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; padding: 120px 60px 80px; gap: 80px; }
+.hero-tag { font-size: 9px; letter-spacing: .38em; text-transform: uppercase; color: var(--c2); margin-bottom: 24px; }
+.hero-title { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(44px,6vw,76px); line-height: 1.08; color: var(--dark); }
+.hero-title em { font-style: italic; color: var(--c2); }
+.hero-rule { width: 48px; height: 1px; background: var(--c1); margin: 28px 0; }
+.hero-body { font-size: 15px; line-height: 1.9; color: var(--mid); margin-bottom: 44px; max-width: 420px; }
+.hero-actions { display: flex; gap: 14px; }
+.btn { display: inline-block; text-decoration: none; font-size: 10px; letter-spacing: .22em; text-transform: uppercase; transition: all .2s; font-family: 'DM Sans', sans-serif; }
+.btn-dark { background: var(--dark); color: #fff; padding: 15px 34px; }
+.btn-dark:hover { background: var(--c3); }
+.btn-ghost { border: 1px solid rgba(199,81,70,.25); color: var(--c2); padding: 14px 34px; }
+.btn-ghost:hover { background: rgba(199,81,70,.05); }
+
+.hero-right { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.hero-prop { background: var(--white); padding: 28px 32px; border-left: 3px solid transparent; transition: border-color .25s, background .25s; }
+.hero-prop:hover { background: #fdf5f0; border-left-color: var(--c2); }
+.hero-prop-num { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 400; color: var(--c2); line-height: 1; margin-bottom: 5px; }
+.hero-prop-label { font-size: 11px; font-weight: 400; color: var(--dark); margin-bottom: 4px; }
+.hero-prop-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* STRIP */
+.strip { background: var(--dark); padding: 17px 60px; display: flex; align-items: center; gap: 36px; flex-wrap: wrap; }
+.strip-item { font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: rgba(255,255,255,.28); white-space: nowrap; }
+.strip-dot { width: 3px; height: 3px; background: var(--c1); border-radius: 50%; flex-shrink: 0; opacity: .5; }
+
+/* ── SECTION SHARED ── */
+.eyebrow { font-size: 9px; letter-spacing: .38em; text-transform: uppercase; color: var(--c2); margin-bottom: 14px; }
+.sec-title { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(28px,3.5vw,44px); line-height: 1.15; color: var(--dark); margin-bottom: 14px; }
+.sec-title em { font-style: italic; color: var(--c2); }
+.sec-sub { font-size: 14px; line-height: 1.85; color: var(--muted); max-width: 480px; }
+.sec-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: end; margin-bottom: 52px; }
+
+/* ── BOOKING ── */
+.book { padding: 100px 60px; background: var(--white); }
+
+.book-inner {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  border: 1px solid rgba(173,46,36,.2);
+  overflow: hidden;
+}
+
+.book-left {
+  background: linear-gradient(170deg, #5a2e28 0%, #3a1a16 100%);
+  padding: 56px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 48px;
+}
+
+.book-eyebrow { font-size: 9px; letter-spacing: .38em; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 18px; }
+.book-title { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(28px,3vw,40px); line-height: 1.12; color: #fff; margin-bottom: 16px; }
+.book-title em { font-style: italic; color: var(--c1); }
+.book-tagline { font-family: 'Playfair Display', serif; font-style: italic; font-size: 14px; color: rgba(255,255,255,.42); line-height: 1.7; }
+
+.book-info { display: flex; flex-direction: column; gap: 18px; }
+.book-info-label { font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 3px; }
+.book-info-val { font-size: 14px; color: rgba(255,255,255,.78); }
+.book-info-val a { color: var(--c1); text-decoration: none; }
+
+.form { background: var(--white); padding: 52px 48px; display: flex; flex-direction: column; gap: 22px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-group label { font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); }
+.form-group input,
+.form-group select,
+.form-group textarea { background: transparent; border: none; border-bottom: 1px solid rgba(100,70,50,.18); color: var(--dark); padding: 12px 0; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; outline: none; transition: border-color .2s; width: 100%; }
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-bottom-color: var(--c2); }
+.form-group textarea { resize: none; min-height: 80px; }
+.form-submit { background: var(--c3); color: #fff; border: none; padding: 16px 44px; font-family: 'DM Sans', sans-serif; font-size: 10px; letter-spacing: .25em; text-transform: uppercase; cursor: none; transition: background .25s; align-self: flex-start; }
+.form-submit:hover { background: var(--dark); }
+
+/* ── SERVICES — menu style ── */
+.services { padding: 100px 60px; background: var(--cream); }
+
+.menu-wrap { max-width: 780px; margin: 0 auto; }
+
+/* cash note — quiet bar */
+.cash-note {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 0;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.cash-note-dot { width: 6px; height: 6px; background: var(--c2); border-radius: 50%; flex-shrink: 0; }
+.cash-note-text { font-size: 12px; color: var(--muted); letter-spacing: .04em; }
+.cash-note-text strong { color: var(--c2); font-weight: 400; }
+
+/* menu rows */
+.menu-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border);
+  transition: background .2s;
+}
+.menu-row:first-of-type { border-top: 1px solid var(--border); }
+
+.menu-left { flex: 1; }
+.menu-tier { font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.menu-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 400; color: var(--dark); margin-bottom: 6px; }
+.menu-desc { font-size: 13px; color: var(--muted); line-height: 1.65; max-width: 440px; }
+
+.menu-dots {
+  flex: 1;
+  border-bottom: 1px dotted rgba(100,70,50,.2);
+  margin: 0 16px;
+  margin-bottom: 4px;
+  align-self: flex-end;
+}
+
+.menu-price { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 400; color: var(--c3); white-space: nowrap; }
+.menu-price small { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 300; color: var(--muted); }
+
+.menu-note { margin-top: 20px; font-size: 11px; color: var(--muted); letter-spacing: .03em; }
+
+/* ── ADDONS ── */
+.addons { padding: 80px 60px; background: var(--white); }
+.addons-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 52px; }
+.addon-card { background: var(--white); padding: 36px 28px; transition: background .25s; }
+.addon-card:hover { background: var(--cream); }
+.addon-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 400; color: var(--dark); margin-bottom: 10px; }
+.addon-desc { font-size: 12px; line-height: 1.75; color: var(--muted); }
+
+/* ── MISSION ── */
+.mission { padding: 100px 60px; background: var(--dark); display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: start; }
+.mission-eyebrow { font-size: 9px; letter-spacing: .38em; text-transform: uppercase; color: var(--c1); margin-bottom: 20px; }
+.mission-title { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(32px,4vw,48px); line-height: 1.1; color: #fff; margin-bottom: 32px; }
+.mission-title em { font-style: italic; color: var(--c1); }
+.mission-body { font-size: 14px; line-height: 1.95; color: rgba(250,247,243,.48); margin-bottom: 18px; }
+.mission-slogan { font-family: 'Playfair Display', serif; font-style: italic; font-size: 17px; color: var(--c1); margin-top: 32px; padding-top: 32px; border-top: 1px solid rgba(234,140,85,.18); }
+
+.win-box { border: 1px solid rgba(199,81,70,.18); overflow: hidden; }
+.win-box-header { background: rgba(255,255,255,.04); padding: 28px 36px; border-bottom: 1px solid rgba(199,81,70,.15); }
+.win-box-header h3 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 400; color: #fff; margin-bottom: 4px; }
+.win-box-header p { font-size: 12px; color: rgba(255,255,255,.38); }
+.win-box-body { padding: 36px; }
+.win-box-body p { font-size: 13px; line-height: 1.85; color: rgba(250,247,243,.42); margin-bottom: 28px; }
+.win-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(199,81,70,.12); }
+.win-stat { background: rgba(255,255,255,.02); padding: 22px 20px; }
+.win-stat-num { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 400; color: var(--c1); margin-bottom: 5px; }
+.win-stat-label { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.25); }
+
+/* ── INSPIRATION ── */
+.inspiration { padding: 100px 60px; background: var(--cream); }
+.insp-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: end; margin-bottom: 52px; }
+.insp-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.insp-card { aspect-ratio: 4/3; position: relative; overflow: hidden; }
+.insp-bg { width: 100%; height: 100%; transition: transform .5s ease; }
+.insp-card:hover .insp-bg { transform: scale(1.05); }
+.bg-gym    { background: linear-gradient(150deg,#c8b090,#8a6040); }
+.bg-yoga   { background: linear-gradient(150deg,#b8cbb0,#6b7d62); }
+.bg-sauna  { background: linear-gradient(150deg,#d4a888,#a06848); }
+.bg-kids   { background: linear-gradient(150deg,#b8ccd8,#6a8898); }
+.bg-studio { background: linear-gradient(150deg,#c8c0b8,#787068); }
+.bg-zen    { background: linear-gradient(150deg,#b8caa8,#6a7a5a); }
+.insp-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px 24px; background: linear-gradient(to top,rgba(0,0,0,.48),transparent); }
+.insp-name { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.82); }
+
+/* ── FAQ ── */
+.faq { padding: 100px 60px; background: var(--white); }
+.faq-inner { max-width: 700px; margin: 52px auto 0; }
+.faq-item { border-top: 1px solid var(--border); padding: 26px 0; }
+.faq-item:last-child { border-bottom: 1px solid var(--border); }
+.faq-q { display: flex; justify-content: space-between; align-items: center; gap: 24px; cursor: none; }
+.faq-q h4 { font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 15px; color: var(--dark); }
+.faq-icon { font-size: 22px; color: var(--c2); font-weight: 200; flex-shrink: 0; transition: transform .3s; line-height: 1; }
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-a { font-size: 13px; line-height: 1.85; color: var(--mid); max-height: 0; overflow: hidden; transition: max-height .4s ease, padding .3s ease; }
+.faq-item.open .faq-a { max-height: 200px; padding-top: 16px; }
+
+/* ── FOOTER ── */
+footer { background: var(--dark); padding: 52px 60px; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; border-top: 1px solid rgba(234,140,85,.08); }
+.footer-logo { font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 16px; letter-spacing: .22em; text-transform: uppercase; color: rgba(250,247,243,.38); }
+.footer-logo .re, .footer-logo .la { color: var(--c1); }
+.footer-logo .claim { font-weight: 500; }
+.footer-slogan { text-align: center; font-family: 'Playfair Display', serif; font-style: italic; font-size: 13px; color: rgba(250,247,243,.2); }
+.footer-right { text-align: right; font-size: 11px; color: rgba(250,247,243,.16); }
+
+/* MOBILE */
+@media (max-width: 900px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  .hero, .mission { grid-template-columns: 1fr; gap: 40px; padding: 100px 24px 60px; }
+  .hero-right { display: none; }
+  .services, .addons, .inspiration, .faq, .book { padding: 72px 24px; }
+  .sec-intro, .insp-intro { grid-template-columns: 1fr; gap: 16px; }
+  .addons-grid { grid-template-columns: 1fr 1fr; }
+  .insp-grid { grid-template-columns: 1fr 1fr; }
+  .book-inner { grid-template-columns: 1fr; }
+  .book-left { padding: 40px 28px; }
+  .form { padding: 32px 24px; }
+  .menu-dots { display: none; }
+  .menu-row { flex-wrap: wrap; gap: 8px; }
+  footer { grid-template-columns: 1fr; text-align: center; gap: 12px; padding: 36px 24px; }
+  .footer-right { text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#home" class="nav-logo"><span class="re">Re</span><span class="claim">claim</span><span class="la"> LA</span></a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#book">Book</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#book" class="nav-book">Book Now</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div>
+    <p class="hero-tag">Los Angeles · Space Transformation</p>
+    <h1 class="hero-title">Reclaim<br/>Your Space.<br/><em>Reclaim<br/>Your Life.</em></h1>
+    <div class="hero-rule"></div>
+    <p class="hero-body">We clear, haul, organize, and transform cluttered spaces across LA — and we buy your unwanted items too. You might walk away with cash instead of just a bill.</p>
+    <div class="hero-actions">
+      <a href="#book" class="btn btn-dark">Book a Cleanout</a>
+      <a href="#services" class="btn btn-ghost">Our Services</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-prop"><div class="hero-prop-num">Cash Back</div><div class="hero-prop-label">We buy your items</div><div class="hero-prop-desc">Furniture, appliances, valuables — we buy directly from you. Walk away with money in your pocket.</div></div>
+    <div class="hero-prop"><div class="hero-prop-num">Same Week</div><div class="hero-prop-label">Fast availability</div><div class="hero-prop-desc">Book today and we'll be at your door this week. No long waits, no runaround.</div></div>
+    <div class="hero-prop"><div class="hero-prop-num">No Surprises</div><div class="hero-prop-label">Upfront pricing</div><div class="hero-prop-desc">We quote you before we start. What we say is what you pay — nothing hidden, ever.</div></div>
+    <div class="hero-prop"><div class="hero-prop-num">Full Service</div><div class="hero-prop-label">Start to finish</div><div class="hero-prop-desc">Cleanout, organization, storage setup — we handle the whole transformation.</div></div>
+  </div>
+</section>
+
+<!-- STRIP -->
+<div class="strip">
+  <span class="strip-item">Garage Cleanouts</span><div class="strip-dot"></div>
+  <span class="strip-item">Junk Removal</span><div class="strip-dot"></div>
+  <span class="strip-item">We Buy Your Items</span><div class="strip-dot"></div>
+  <span class="strip-item">Home Organization</span><div class="strip-dot"></div>
+  <span class="strip-item">Space Transformation</span><div class="strip-dot"></div>
+  <span class="strip-item">Santa Monica · West LA</span><div class="strip-dot"></div>
+  <span class="strip-item">Same-Week Service</span><div class="strip-dot"></div>
+  <span class="strip-item">Upfront Pricing</span>
+</div>
+
+<!-- BOOKING -->
+<section class="book" id="book">
+  <div class="book-inner">
+    <div class="book-left">
+      <div>
+        <p class="book-eyebrow">Get Started</p>
+        <h2 class="book-title">Ready to<br/><em>reclaim<br/>your space?</em></h2>
+        <p class="book-tagline">"The first step is clearing the space. The rest is yours."</p>
+      </div>
+      <div class="book-info">
+        <div><div class="book-info-label">Phone / Text</div><div class="book-info-val"><a href="sms:3109571362">(310) 957-1362</a></div></div>
+        <div><div class="book-info-label">Service Area</div><div class="book-info-val">Santa Monica · West LA</div></div>
+        <div><div class="book-info-label">Availability</div><div class="book-info-val">Same-week scheduling</div></div>
+      </div>
+    </div>
+    <form class="form" onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" placeholder="First name"/></div>
+        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Last name"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Phone</label><input type="tel" placeholder="(310) 000-0000"/></div>
+        <div class="form-group"><label>Email</label><input type="email" placeholder="you@email.com"/></div>
+      </div>
+      <div class="form-group">
+        <label>Service</label>
+        <select>
+          <option value="">Select a service...</option>
+          <option>Small Cleanout — Half Truck ($200–$250)</option>
+          <option>Medium Cleanout — Full Truck ($350–$400)</option>
+          <option>Large Cleanout — Multiple Loads ($500–$600)</option>
+          <option>Home Organization</option>
+          <option>Not sure — I'd like a quote</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Neighborhood</label><input type="text" placeholder="Santa Monica, CA"/></div>
+      <div class="form-group"><label>Tell us about your space</label><textarea placeholder="What's in the space? Any heavy items? What are you hoping to do with it after?"></textarea></div>
+      <button type="submit" class="form-submit">Request My Appointment</button>
+    </form>
+  </div>
+</section>
+
+<!-- SERVICES — menu style -->
+<section class="services" id="services">
+  <div class="sec-intro">
+    <div>
+      <p class="eyebrow">Services</p>
+      <h2 class="sec-title">Everything you need.<br/><em>One call.</em></h2>
+    </div>
+    <p class="sec-sub">From a single room to a full estate — we show up, haul it out, organize what stays, and leave you with a space you'll actually love. No hidden fees, no drama.</p>
+  </div>
+
+  <div class="menu-wrap">
+    <div class="cash-note">
+      <div class="cash-note-dot"></div>
+      <p class="cash-note-text"><strong>We buy what we haul.</strong> Instead of just a removal bill, you may walk away with cash back on qualifying items.</p>
+    </div>
+
+    <div class="menu-row">
+      <div class="menu-left">
+        <p class="menu-tier">Small Load</p>
+        <p class="menu-name">Half Truck</p>
+        <p class="menu-desc">Light loads, partial garage or single room. A great first step.</p>
+      </div>
+      <div class="menu-dots"></div>
+      <div class="menu-price">$200 <small>– $250</small></div>
+    </div>
+
+    <div class="menu-row">
+      <div class="menu-left">
+        <p class="menu-tier">Medium Load</p>
+        <p class="menu-name">Full Truck</p>
+        <p class="menu-desc">Full garage or multi-room cleanout. Our most popular option.</p>
+      </div>
+      <div class="menu-dots"></div>
+      <div class="menu-price">$350 <small>– $400</small></div>
+    </div>
+
+    <div class="menu-row">
+      <div class="menu-left">
+        <p class="menu-tier">Large Load</p>
+        <p class="menu-name">Multiple Runs</p>
+        <p class="menu-desc">Heavy items, multiple loads, large estates. We handle it all.</p>
+      </div>
+      <div class="menu-dots"></div>
+      <div class="menu-price">$500 <small>– $600</small></div>
+    </div>
+
+    <p class="menu-note">Additional charges apply for heavy items such as concrete, tile, and appliances. All pricing confirmed upfront before any work begins.</p>
+  </div>
+</section>
+
+<!-- ADDONS -->
+<section class="addons">
+  <div class="sec-intro">
+    <div>
+      <p class="eyebrow">Add-On Services</p>
+      <h2 class="sec-title">We don't just haul.<br/><em>We transform.</em></h2>
+    </div>
+    <p class="sec-sub">Once the space is clear we help you make it something you actually want. Organization, storage, cleaning — your home's fresh start crew.</p>
+  </div>
+  <div class="addons-grid">
+    <div class="addon-card"><h4 class="addon-name">Home Organization</h4><p class="addon-desc">We sort, arrange, and organize your space so it works for your life — not against it.</p></div>
+    <div class="addon-card"><h4 class="addon-name">Storage Setup</h4><p class="addon-desc">Boxes, shelving, and racks installed so everything has a proper place and stays there.</p></div>
+    <div class="addon-card"><h4 class="addon-name">Deep Cleaning</h4><p class="addon-desc">After the haul we sweep, clean, and leave the space truly fresh and ready.</p></div>
+    <div class="addon-card"><h4 class="addon-name">We Buy Your Items</h4><p class="addon-desc">Furniture, appliances, valuables — assessed on arrival. Walk away with cash instead of just a bill.</p></div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section class="mission" id="about">
+  <div>
+    <p class="mission-eyebrow">Our Mission</p>
+    <h2 class="mission-title">Built for<br/><em>your home.</em></h2>
+    <p class="mission-body">At Reclaim LA, we believe your home should feel like yours again. We know what it's like when a cluttered garage or overwhelmed room starts to weigh on you — that feeling of walking past a space you've given up on. It's more than just stuff. It's stress, lost time, and a part of your home you stopped being able to enjoy.</p>
+    <p class="mission-body">That's where we come in. Reclaim LA was built to do more than haul things away. We transform cluttered, overwhelming spaces into something you'll actually love again — and once it's clear, we organize it so it stays that way. Whether that means sorting through years of buildup, setting up shelving and storage, or reorganizing a room from scratch, we handle it all so you don't have to.</p>
+    <p class="mission-body">We're not just a junk removal company. We're the first step toward a home that feels like home again — cleared out, organized, and ready for whatever you want it to become.</p>
+    <p class="mission-body">Upfront pricing. No surprises. Same-week availability.</p>
+    <p class="mission-slogan">Reclaim Your Space · Reclaim Your Life</p>
+  </div>
+  <div>
+    <div class="win-box">
+      <div class="win-box-header"><h3>Why Reclaim LA Wins</h3><p>We're not your average hauler.</p></div>
+      <div class="win-box-body">
+        <p>Most junk removal companies show up, haul your stuff, and hand you a bill. We buy what we can, organize what stays, and leave your space genuinely transformed — not just empty.</p>
+        <div class="win-stats">
+          <div class="win-stat"><div class="win-stat-num">Cash Back</div><div class="win-stat-label">On qualifying items</div></div>
+          <div class="win-stat"><div class="win-stat-num">Same Week</div><div class="win-stat-label">Availability</div></div>
+          <div class="win-stat"><div class="win-stat-num">No Hidden</div><div class="win-stat-label">Fees ever</div></div>
+          <div class="win-stat"><div class="win-stat-num">Full Service</div><div class="win-stat-label">Start to finish</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSPIRATION -->
+<section class="inspiration" id="inspire">
+  <div class="insp-intro">
+    <div>
+      <p class="eyebrow">Dream Bigger</p>
+      <h2 class="sec-title">What could your<br/><em>space become?</em></h2>
+    </div>
+    <p class="sec-sub">Your garage is more than storage. A home gym. A yoga studio. A kids' room. A creative space. We clear the first step — you build the life.</p>
+  </div>
+  <div class="insp-grid">
+    <div class="insp-card"><div class="insp-bg bg-gym"></div><div class="insp-overlay"><p class="insp-name">Home Gym</p></div></div>
+    <div class="insp-card"><div class="insp-bg bg-yoga"></div><div class="insp-overlay"><p class="insp-name">Yoga Studio</p></div></div>
+    <div class="insp-card"><div class="insp-bg bg-sauna"></div><div class="insp-overlay"><p class="insp-name">Sauna & Wellness</p></div></div>
+    <div class="insp-card"><div class="insp-bg bg-kids"></div><div class="insp-overlay"><p class="insp-name">Kids Room</p></div></div>
+    <div class="insp-card"><div class="insp-bg bg-studio"></div><div class="insp-overlay"><p class="insp-name">Creative Studio</p></div></div>
+    <div class="insp-card"><div class="insp-bg bg-zen"></div><div class="insp-overlay"><p class="insp-name">Zen Room</p></div></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <p class="eyebrow" style="text-align:center;">FAQ</p>
+  <h2 class="sec-title" style="text-align:center;">Common<br/><em>questions.</em></h2>
+  <div class="faq-inner">
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><h4>How does pricing work?</h4><div class="faq-icon">+</div></div><div class="faq-a">We give you a full upfront quote before any work begins. Pricing is based on load size and item weight. Heavy items like appliances and concrete may carry an additional charge, which we'll always communicate first. No surprises, ever.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><h4>Do you really buy items?</h4><div class="faq-icon">+</div></div><div class="faq-a">Yes. We buy unwanted furniture, appliances, and valuables directly from you. Instead of just paying to have things hauled away, you may walk away with cash. We assess items on arrival based on condition and resale value.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><h4>How quickly can you come out?</h4><div class="faq-icon">+</div></div><div class="faq-a">We offer same-week availability across Santa Monica and West LA. Book online or text us at (310) 957-1362 and we'll get you scheduled fast.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><h4>Do you help with organization too?</h4><div class="faq-icon">+</div></div><div class="faq-a">Yes — beyond cleanouts we offer full home organization, storage setup, shelving installation, and deep cleaning. Once the space is clear we help you make it truly functional and organized.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><h4>What areas do you serve?</h4><div class="faq-icon">+</div></div><div class="faq-a">We serve Santa Monica and the greater West LA area. Not sure if we cover your neighborhood? Text us and we'll let you know right away.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><h4>What happens to my stuff after?</h4><div class="faq-icon">+</div></div><div class="faq-a">Items we purchase are individually resold. Everything else is hauled to a licensed disposal facility. Electronics and paint are handled separately per California regulations.</div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span class="re">Re</span><span class="claim">claim</span><span class="la"> LA</span></div>
+  <div class="footer-slogan">Reclaim Your Space · Reclaim Your Life</div>
+  <div class="footer-right">© 2025 Reclaim LA · Santa Monica, CA</div>
+</footer>
+
+<script>
+const cur=document.getElementById('cursor'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+(function loop(){ rx+=(mx-rx)*.1; ry+=(my-ry)*.1; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(loop); })();
+document.querySelectorAll('a,button,.faq-q,.addon-card,.insp-card,.hero-prop,.menu-row').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ cur.style.width='14px'; cur.style.height='14px'; ring.style.width='42px'; ring.style.height='42px'; });
+  el.addEventListener('mouseleave',()=>{ cur.style.width='8px'; cur.style.height='8px'; ring.style.width='28px'; ring.style.height='28px'; });
+});
+function toggleFaq(el){ const item=el.parentElement; const open=item.classList.contains('open'); document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open')); if(!open) item.classList.add('open'); }
+function handleSubmit(e){ e.preventDefault(); const btn=e.target.querySelector('.form-submit'); btn.textContent='Request Received — We\'ll Be in Touch Soon'; btn.style.background='#6b7d62'; }
+</script>
+</body>
+</html>
