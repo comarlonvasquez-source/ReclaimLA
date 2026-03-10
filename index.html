@@ -480,7 +480,7 @@ document.querySelectorAll('a,button,.faq-q,.addon-card,.insp-card,.hero-prop,.me
   el.addEventListener('mouseleave',()=>{ cur.style.width='8px'; cur.style.height='8px'; ring.style.width='28px'; ring.style.height='28px'; });
 });
 function toggleFaq(el){ const item=el.parentElement; const open=item.classList.contains('open'); document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open')); if(!open) item.classList.add('open'); }
-function handleSubmit(e){ e.preventDefault(); const btn=e.target.querySelector('.form-submit'); btn.textContent='Request Received — We\'ll Be in Touch Soon'; btn.style.background='#6b7d62'; }
+
 </script>
 </body>
 </html>
