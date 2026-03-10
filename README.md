@@ -14,4 +14,3 @@ Official website for Reclaim LA — garage cleanouts and space transformation se
 Phone / Text: (310) 957-1362
 Location: Santa Monica · West LA
 
-Then scroll down and click Commit changes. That's it — your README is done. Short and clean is all you need for now.
