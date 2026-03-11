@@ -312,16 +312,16 @@ footer { background: var(--dark); padding: 52px 60px; display: grid; grid-templa
    <form class="form" action="https://formspree.io/f/meeredyq" method="POST">
      <input type="hidden" name="_subject" value="New Reclaim LA Booking Request"/>
       <div class="form-row">
-        <div class="form-group"><label>First Name</label><input type="text" placeholder="First name"/></div>
-        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Last name"/></div>
+        <div class="form-group"><label>First Name</label><input type="text" name="first_name" placeholder="First name"/></div>
+        <div class="form-group"><label>Last Name</label><input type="text" name=last_name" placeholder="Last name"/></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Phone</label><input type="tel" placeholder="(310) 000-0000"/></div>
-        <div class="form-group"><label>Email</label><input type="email" placeholder="you@email.com"/></div>
+        <div class="form-group"><label>Phone</label><input type="tel" name="phone" placeholder="(310) 000-0000"/></div>
+        <div class="form-group"><label>Email</label><input type="email" name="email" placeholder="you@email.com"/></div>
       </div>
       <div class="form-group">
         <label>Service</label>
-        <select>
+        <select name="service">
           <option value="">Select a service...</option>
           <option>Small Cleanout — Half Truck ($200–$250)</option>
           <option>Medium Cleanout — Full Truck ($350–$400)</option>
@@ -330,8 +330,8 @@ footer { background: var(--dark); padding: 52px 60px; display: grid; grid-templa
           <option>Not sure — I'd like a quote</option>
         </select>
       </div>
-      <div class="form-group"><label>Neighborhood</label><input type="text" placeholder="Santa Monica, CA"/></div>
-      <div class="form-group"><label>Tell us about your space</label><textarea placeholder="What's in the space? Any heavy items? What are you hoping to do with it after?"></textarea></div>
+      <div class="form-group"><label>Neighborhood</label><input type="text" name="neighborhood" placeholder="Santa Monica, CA"/></div>
+      <div class="form-group"><label>Tell us about your space</label><textarea name="message" placeholder="What's in the space? Any heavy items? What are you hoping to do with it after?"></textarea></div>
       <button type="submit" class="form-submit">Request My Appointment</button>
     </form>
   </div>
